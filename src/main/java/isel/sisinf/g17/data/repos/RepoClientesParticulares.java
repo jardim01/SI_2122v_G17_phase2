@@ -1,6 +1,7 @@
 package isel.sisinf.g17.data.repos;
 
 import isel.sisinf.g17.data.Utils;
+import isel.sisinf.g17.data.repos.interfaces.IRepoClientesParticulares;
 import isel.sisinf.g17.domain.ClienteParticular;
 import jakarta.persistence.EntityManager;
 

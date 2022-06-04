@@ -1,4 +1,7 @@
-package isel.sisinf.g17.domain;
+package isel.sisinf.g17.domain.interfaces;
+
+import isel.sisinf.g17.domain.RegistoProcessado;
+import isel.sisinf.g17.domain.Veiculo;
 
 import java.sql.Timestamp;
 

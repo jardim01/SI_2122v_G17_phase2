@@ -1,7 +1,8 @@
-package isel.sisinf.g17.domain;
+package isel.sisinf.g17.domain.interfaces;
 
-interface IClienteParticular extends ICliente {
+import isel.sisinf.g17.domain.ClienteParticular;
 
+public interface IClienteParticular extends ICliente {
     int getNif();
 
     String getNome();

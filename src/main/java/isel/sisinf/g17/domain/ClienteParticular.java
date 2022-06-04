@@ -1,5 +1,7 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.domain.interfaces.IClienteParticular;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +24,7 @@ public class ClienteParticular implements IClienteParticular {
     private String morada;
     private int telefone;
     private final char tipo = 'P';
+    @Convert(converter = BooleanToBit.class)
     private boolean removido;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -31,15 +34,11 @@ public class ClienteParticular implements IClienteParticular {
     @Column(table = "clientes_particulares")
     private int cc;
 
-    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
-    @JoinColumn(table = "frotas_veiculos", name = "id")
-    private Frota frota;
-
     public ClienteParticular() {
 
     }
 
-    public ClienteParticular(int nif, String nome, String morada, int telefone) {
+    public ClienteParticular(int nif, String nome, String morada, int telefone, int cc) {
         super();
 
         setNif(nif);
@@ -47,6 +46,7 @@ public class ClienteParticular implements IClienteParticular {
         setMorada(morada);
         setTelefone(telefone);
         setRemovido(false);
+        setCc(cc);
     }
 
     @Override
@@ -85,18 +85,13 @@ public class ClienteParticular implements IClienteParticular {
     }
 
     @Override
-    public Frota getFrota() {
-        return frota;
-    }
-
-    @Override
     public int getCc() {
         return cc;
     }
 
     @Override
     public void setNif(int nif) {
-        if (nif < 0 || nif > 999999999)
+        if (!Validation.nifValido(nif))
             throw new IllegalArgumentException("Invalid nif");
         this.nif = nif;
     }
@@ -117,7 +112,7 @@ public class ClienteParticular implements IClienteParticular {
 
     @Override
     public void setTelefone(int telefone) {
-        if (telefone < 0 || telefone > 999999999)
+        if (!Validation.telefoneValido(nif))
             throw new IllegalArgumentException("Invalid phone number");
         this.telefone = telefone;
     }
@@ -133,13 +128,8 @@ public class ClienteParticular implements IClienteParticular {
     }
 
     @Override
-    public void setFrota(Frota frota) {
-        this.frota = frota;
-    }
-
-    @Override
     public void setCc(int cc) {
-        if (cc < 0 || cc > 99999999)
+        if (!Validation.ccValido(cc))
             throw new IllegalArgumentException("Invalid cc");
         this.cc = cc;
     }
@@ -147,8 +137,8 @@ public class ClienteParticular implements IClienteParticular {
     @Override
     public String toString() {
         return String.format(
-                "ClienteParticular(nif=%d, cc=%d, nome=%s, morada=%s, telefone=%d, refCliente=%d, removido=%b, idFrota=%d)",
-                nif, cc, nome, morada, telefone, (refCliente == null) ? null : refCliente.getNif(), removido, frota.getId()
+                "ClienteParticular(nif=%d, cc=%d, nome=%s, morada=%s, telefone=%d, refCliente=%d, removido=%b)",
+                nif, cc, nome, morada, telefone, (refCliente == null) ? null : refCliente.getNif(), removido
         );
     }
 }

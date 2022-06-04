@@ -1,11 +1,11 @@
-package isel.sisinf.g17.domain;
+package isel.sisinf.g17.domain.interfaces;
+
+import isel.sisinf.g17.domain.Estado;
 
 public interface IEquipamento {
     long getId();
 
     Estado getEstado();
-
-    void setId(long id);
 
     void setEstado(Estado estado);
 }

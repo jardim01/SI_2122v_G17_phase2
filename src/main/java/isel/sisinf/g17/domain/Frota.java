@@ -1,5 +1,6 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.domain.interfaces.IFrota;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,14 +11,22 @@ public class Frota implements IFrota {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "nif_cliente")
+    private int nif;
+
     @Override
     public long getId() {
         return id;
     }
 
     @Override
-    public void setId(long id) {
-        this.id = id;
+    public int getNif() {
+        return nif;
+    }
+
+    @Override
+    public void setNif(int nif) {
+        this.nif = nif;
     }
 
     @Override

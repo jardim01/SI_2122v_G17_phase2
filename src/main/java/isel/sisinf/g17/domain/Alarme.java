@@ -1,5 +1,6 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.domain.interfaces.IAlarme;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;

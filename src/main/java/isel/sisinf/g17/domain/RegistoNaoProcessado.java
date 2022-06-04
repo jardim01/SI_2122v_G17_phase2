@@ -1,18 +1,18 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.domain.interfaces.IRegistoProcessado;
+import isel.sisinf.g17.domain.interfaces.IRegistoNaoProcessado;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "registos_processados")
-public class RegistoProcessado implements IRegistoProcessado {
+@Table(name = "registos_nao_processados")
+public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reg")
     private long id;
-    @Column(name = "marca_temporal_proc")
+    @Column(name = "marca_temporal")
     private Timestamp marcaTemporal;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

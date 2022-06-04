@@ -1,9 +1,12 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.domain.interfaces.IVeiculo;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "veiculos")
+@NamedQuery(name = "Veiculo.findByKey", query = "SELECT v FROM Veiculo v WHERE v.matricula = :key")
 public class Veiculo implements IVeiculo {
     @Id
     private String matricula;
@@ -52,16 +55,22 @@ public class Veiculo implements IVeiculo {
 
     @Override
     public void setMatricula(String matricula) {
+        if (!Validation.matriculaValida(matricula))
+            throw new IllegalArgumentException("Invalid license plate format");
         this.matricula = matricula;
     }
 
     @Override
     public void setNomeCondutorAtual(String nomeCondutorAtual) {
+        if (nomeCondutorAtual.length() > MAX_NAME_LENGTH)
+            throw new IllegalArgumentException("The given name is too long");
         this.nomeCondutorAtual = nomeCondutorAtual;
     }
 
     @Override
     public void setTelefoneCondutorAtual(int telefoneCondutorAtual) {
+        if (!Validation.telefoneValido(telefoneCondutorAtual))
+            throw new IllegalArgumentException("Invalid phone number");
         this.telefoneCondutorAtual = telefoneCondutorAtual;
     }
 
@@ -73,5 +82,13 @@ public class Veiculo implements IVeiculo {
     @Override
     public void setFrota(Frota frota) {
         this.frota = frota;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Veiculo(matricula=%s, nomeCondutorAtual=%s, telefoneCondutorAtual=%d, equipId=%d, frotaId=%d, nAlarmes=%d)",
+                matricula, nomeCondutorAtual, telefoneCondutorAtual, equipamento.getId(), frota.getId(), numeroAlarmes
+        );
     }
 }
