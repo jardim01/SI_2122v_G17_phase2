@@ -1,4 +1,4 @@
-package isel.sisinf.g17.domain;
+package isel.sisinf.g17.domain.interfaces;
 
 public interface IEstado {
     int MAX_ESTADO_LENGTH = 20;

@@ -1,5 +1,8 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.domain.interfaces.IClienteInstitucional;
+
 public class ClienteInstitucional implements IClienteInstitucional {
     private int nif;
     private String nome;
@@ -51,14 +54,10 @@ public class ClienteInstitucional implements IClienteInstitucional {
         return removido;
     }
 
-    @Override
-    public Frota getFrota() {
-        return frota;
-    }
 
     @Override
     public void setNif(int nif) {
-        if (nif < 0 || nif > 999999999)
+        if (!Validation.nifValido(nif))
             throw new IllegalArgumentException("Invalid nif");
         this.nif = nif;
     }
@@ -79,7 +78,7 @@ public class ClienteInstitucional implements IClienteInstitucional {
 
     @Override
     public void setTelefone(int telefone) {
-        if (telefone < 0 || telefone > 999999999)
+        if (!Validation.telefoneValido(telefone))
             throw new IllegalArgumentException("Invalid phone number");
         this.telefone = telefone;
     }
@@ -92,11 +91,6 @@ public class ClienteInstitucional implements IClienteInstitucional {
     @Override
     public void setRemovido(boolean removido) {
         this.removido = removido;
-    }
-
-    @Override
-    public void setFrota(Frota frota) {
-        this.frota = frota;
     }
 
     @Override

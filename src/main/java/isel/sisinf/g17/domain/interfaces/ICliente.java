@@ -1,4 +1,6 @@
-package isel.sisinf.g17.domain;
+package isel.sisinf.g17.domain.interfaces;
+
+import isel.sisinf.g17.domain.ClienteParticular;
 
 public interface ICliente {
     int MAX_NAME_LENGTH = 60;
@@ -18,8 +20,6 @@ public interface ICliente {
 
     boolean getRemovido();
 
-    Frota getFrota();
-
     void setNif(int nif);
 
     void setNome(String nome);
@@ -31,6 +31,4 @@ public interface ICliente {
     void setRefCliente(ClienteParticular refCliente);
 
     void setRemovido(boolean removido);
-
-    void setFrota(Frota frota);
 }

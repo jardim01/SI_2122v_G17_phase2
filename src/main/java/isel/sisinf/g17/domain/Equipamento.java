@@ -1,5 +1,6 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.domain.interfaces.IEquipamento;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,10 +25,6 @@ public class Equipamento implements IEquipamento {
         return estado;
     }
 
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
 
     @Override
     public void setEstado(Estado estado) {

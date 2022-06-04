@@ -1,5 +1,6 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.domain.interfaces.IEstado;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQuery;

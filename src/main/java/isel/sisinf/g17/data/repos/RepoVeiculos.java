@@ -1,36 +1,36 @@
 package isel.sisinf.g17.data.repos;
 
 import isel.sisinf.g17.data.Utils;
-import isel.sisinf.g17.data.repos.interfaces.IRepoAlarmes;
-import isel.sisinf.g17.domain.Alarme;
+import isel.sisinf.g17.data.repos.interfaces.IRepoVeiculos;
+import isel.sisinf.g17.domain.Veiculo;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-public class RepoAlarmes implements IRepoAlarmes {
+public class RepoVeiculos implements IRepoVeiculos {
     private final EntityManager em;
 
-    public RepoAlarmes(EntityManager em) {
+    public RepoVeiculos(EntityManager em) {
         super();
 
         this.em = em;
     }
 
     @Override
-    public Alarme findByKey(Long key) {
-        return em.createNamedQuery("Alarme.findByKey", Alarme.class)
+    public Veiculo findByKey(String key) {
+        return em.createNamedQuery("Veiculo.findByKey", Veiculo.class)
                 .setParameter("key", key)
                 .getSingleResult();
     }
 
     @Override
-    public void add(Alarme entity) {
+    public void add(Veiculo entity) {
         // TODO: review this
         em.merge(entity);
     }
 
     @Override
-    public void remove(Alarme entity) {
+    public void remove(Veiculo entity) {
         em.remove(entity);
     }
 

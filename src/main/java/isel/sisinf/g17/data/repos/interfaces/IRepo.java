@@ -1,4 +1,4 @@
-package isel.sisinf.g17.data.repos;
+package isel.sisinf.g17.data.repos.interfaces;
 
 import java.util.List;
 
