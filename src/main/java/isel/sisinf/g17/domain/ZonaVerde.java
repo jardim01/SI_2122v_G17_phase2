@@ -1,6 +1,6 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IZonaVerde;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;

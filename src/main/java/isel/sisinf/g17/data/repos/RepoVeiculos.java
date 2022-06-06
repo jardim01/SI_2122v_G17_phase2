@@ -1,6 +1,6 @@
 package isel.sisinf.g17.data.repos;
 
-import isel.sisinf.g17.data.Utils;
+import isel.sisinf.g17.data.Generic;
 import isel.sisinf.g17.data.repos.interfaces.IRepoVeiculos;
 import isel.sisinf.g17.domain.Veiculo;
 import jakarta.persistence.EntityManager;
@@ -36,6 +36,6 @@ public class RepoVeiculos implements IRepoVeiculos {
 
     @Override
     public <R> List<R> find(String jpql, Object... params) {
-        return Utils.genericQuery(em, jpql, params);
+        return Generic.query(em, jpql, params);
     }
 }

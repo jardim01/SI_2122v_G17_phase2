@@ -1,6 +1,6 @@
 package isel.sisinf.g17.data.repos;
 
-import isel.sisinf.g17.data.Utils;
+import isel.sisinf.g17.data.Generic;
 import isel.sisinf.g17.data.repos.interfaces.IRepoAlarmes;
 import isel.sisinf.g17.domain.Alarme;
 import jakarta.persistence.EntityManager;
@@ -36,6 +36,6 @@ public class RepoAlarmes implements IRepoAlarmes {
 
     @Override
     public <R> List<R> find(String jpql, Object... params) {
-        return Utils.genericQuery(em, jpql, params);
+        return Generic.query(em, jpql, params);
     }
 }

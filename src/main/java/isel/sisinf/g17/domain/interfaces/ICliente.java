@@ -3,9 +3,6 @@ package isel.sisinf.g17.domain.interfaces;
 import isel.sisinf.g17.domain.ClienteParticular;
 
 public interface ICliente {
-    int MAX_NAME_LENGTH = 60;
-    int MAX_ADDRESS_LENGTH = 60;
-
     int getNif();
 
     String getNome();

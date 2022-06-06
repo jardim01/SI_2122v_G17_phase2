@@ -1,6 +1,6 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IClienteParticular;
 import jakarta.persistence.*;
 
@@ -98,14 +98,14 @@ public class ClienteParticular implements IClienteParticular {
 
     @Override
     public void setNome(String nome) {
-        if (nome.length() > MAX_NAME_LENGTH)
+        if (!Validation.nomeValido(nome))
             throw new IllegalArgumentException("The given name is too long");
         this.nome = nome;
     }
 
     @Override
     public void setMorada(String morada) {
-        if (morada.length() > MAX_ADDRESS_LENGTH)
+        if (Validation.moradaValida(morada))
             throw new IllegalArgumentException("The given address is too long");
         this.morada = morada;
     }

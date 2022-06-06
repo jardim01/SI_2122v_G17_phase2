@@ -1,35 +1,35 @@
 package isel.sisinf.g17.data.repos;
 
 import isel.sisinf.g17.data.Generic;
-import isel.sisinf.g17.data.repos.interfaces.IRepoClientesParticulares;
-import isel.sisinf.g17.domain.ClienteParticular;
+import isel.sisinf.g17.data.repos.interfaces.IRepoClientesInstitucionais;
+import isel.sisinf.g17.domain.ClienteInstitucional;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
-public class RepoClientesParticulares implements IRepoClientesParticulares {
+public class RepoClientesInstitucionais implements IRepoClientesInstitucionais {
     private final EntityManager em;
 
-    public RepoClientesParticulares(EntityManager em) {
+    public RepoClientesInstitucionais(EntityManager em) {
         super();
 
         this.em = em;
     }
 
     @Override
-    public ClienteParticular findByKey(Integer key) {
-        return em.createNamedQuery("ClienteParticular.findByKey", ClienteParticular.class)
+    public ClienteInstitucional findByKey(Integer key) {
+        return em.createNamedQuery("ClienteInstitucional.findByKey", ClienteInstitucional.class)
                 .setParameter("key", key)
                 .getSingleResult();
     }
 
     @Override
-    public void add(ClienteParticular entity) {
+    public void add(ClienteInstitucional entity) {
         em.merge(entity);
     }
 
     @Override
-    public void remove(ClienteParticular entity) {
+    public void remove(ClienteInstitucional entity) {
         em.remove(entity);
     }
 

@@ -1,9 +1,7 @@
 package isel.sisinf.g17.data;
 
 import isel.sisinf.g17.data.repos.*;
-import isel.sisinf.g17.data.repos.interfaces.IRepoAlarmes;
-import isel.sisinf.g17.data.repos.interfaces.IRepoClientesParticulares;
-import isel.sisinf.g17.data.repos.interfaces.IRepoVeiculos;
+import isel.sisinf.g17.data.repos.interfaces.*;
 import isel.sisinf.g17.domain.ClienteParticular;
 import isel.sisinf.g17.domain.Veiculo;
 import isel.sisinf.g17.domain.ZonaVerde;
@@ -16,8 +14,11 @@ public class JPAContext implements IContext {
     private int txCount;
 
     private final IRepoClientesParticulares repoClientesParticulares;
+    private final IRepoClientesInstitucionais repoClientesInstitucionais;
     private final IRepoAlarmes repoAlarmes;
     private final IRepoVeiculos repoVeiculos;
+
+    private final IRepoFrotas repoFrotas;
 
     public JPAContext() {
         this("isel-sisinf-g17");
@@ -29,8 +30,10 @@ public class JPAContext implements IContext {
         this.emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         this.em = emf.createEntityManager();
         this.repoClientesParticulares = new RepoClientesParticulares(this.em);
+        this.repoClientesInstitucionais = new RepoClientesInstitucionais(this.em);
         this.repoAlarmes = new RepoAlarmes(this.em);
         this.repoVeiculos = new RepoVeiculos(this.em);
+        this.repoFrotas = new RepoFrotas(this.em);
     }
 
     @Override
@@ -47,7 +50,10 @@ public class JPAContext implements IContext {
     public void commit() {
         --txCount;
         if (txCount == 0 && tx != null) {
-            tx.commit();
+            if (tx.getRollbackOnly())
+                tx.rollback();
+            else
+                tx.commit();
             tx = null;
         }
     }
@@ -63,6 +69,11 @@ public class JPAContext implements IContext {
     }
 
     @Override
+    public IRepoClientesInstitucionais getRepoClientesInstitucionais() {
+        return this.repoClientesInstitucionais;
+    }
+
+    @Override
     public IRepoAlarmes getRepoAlarmes() {
         return this.repoAlarmes;
     }
@@ -70,6 +81,11 @@ public class JPAContext implements IContext {
     @Override
     public IRepoVeiculos getRepoVeiculos() {
         return this.repoVeiculos;
+    }
+
+    @Override
+    public IRepoFrotas getRepoFrotas() {
+        return this.repoFrotas;
     }
 
     @Override
@@ -96,21 +112,27 @@ public class JPAContext implements IContext {
     @Override
     public void processarRegistos() {
         beginTransaction();
-        em.createNativeQuery("call processarRegistos()").executeUpdate();
-        commit();
+        try {
+            em.createNativeQuery("call processarRegistos()").executeUpdate();
+        } finally {
+            commit();
+        }
     }
 
     @Override
-    public ClienteParticular inserirCliente(int nif, String nome, String morada, int telefone, int cc) {
+    public ClienteParticular inserirClienteParticular(int nif, String nome, String morada, int telefone, int cc) {
         beginTransaction();
-        Query q = em.createNativeQuery("call inserirCliente(?1, ?2, ?3, ?4, null, 'P', null, ?5)");
-        q.setParameter(1, nif);
-        q.setParameter(2, nome);
-        q.setParameter(3, morada);
-        q.setParameter(4, telefone);
-        q.setParameter(5, cc);
-        q.executeUpdate();
-        commit();
+        try {
+            Query q = em.createNativeQuery("call inserirCliente(?1, ?2, ?3, ?4, null, 'P', null, ?5)");
+            q.setParameter(1, nif);
+            q.setParameter(2, nome);
+            q.setParameter(3, morada);
+            q.setParameter(4, telefone);
+            q.setParameter(5, cc);
+            q.executeUpdate();
+        } finally {
+            commit();
+        }
         return repoClientesParticulares.findByKey(nif);
     }
 
@@ -122,23 +144,36 @@ public class JPAContext implements IContext {
             int nifCliente,
             ZonaVerde zonaVerde
     ) {
-        beginTransaction();
-        Query q;
-        if (zonaVerde == null) {
-            q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, null, null, null)");
-        } else {
-            q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
-            q.setParameter(5, zonaVerde.getLatitude());
-            q.setParameter(6, zonaVerde.getLongitude());
-            q.setParameter(7, zonaVerde.getRaio());
+        try {
+            beginTransaction();
+            Query q;
+            if (zonaVerde == null) {
+                q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, null, null, null)");
+            } else {
+                q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+                q.setParameter(5, zonaVerde.getLatitude());
+                q.setParameter(6, zonaVerde.getLongitude());
+                q.setParameter(7, zonaVerde.getRaio());
+            }
+            q.setParameter(1, matricula);
+            q.setParameter(2, nomeCondutor);
+            q.setParameter(3, telefoneCondutor);
+            q.setParameter(4, nifCliente);
+            q.executeUpdate();
+        } finally {
+            commit();
         }
-        q.setParameter(1, matricula);
-        q.setParameter(2, nomeCondutor);
-        q.setParameter(3, telefoneCondutor);
-        q.setParameter(4, nifCliente);
-        q.executeUpdate();
-        commit();
         return repoVeiculos.findByKey(matricula);
+    }
+
+    @Override
+    public void apagarRegistosInvalidos() {
+        beginTransaction();
+        try {
+            em.createNativeQuery("call removerRegistosInvalidos()").executeUpdate();
+        } finally {
+            commit();
+        }
     }
 
     @Override

@@ -4,8 +4,6 @@ import isel.sisinf.g17.domain.Equipamento;
 import isel.sisinf.g17.domain.Frota;
 
 public interface IVeiculo {
-    int MAX_NAME_LENGTH = 60;
-
     String getMatricula();
 
     String getNomeCondutorAtual();

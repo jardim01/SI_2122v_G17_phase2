@@ -5,7 +5,13 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "frotas_veiculos")
-@NamedQuery(name = "Frota.findByKey", query = "SELECT f FROM Frota f WHERE f.id = :key")
+@NamedQueries(
+        value = {
+                @NamedQuery(name = "Frota.findByKey", query = "SELECT f FROM Frota f WHERE f.id = :key"),
+                @NamedQuery(name = "Frota.findByNif", query = "SELECT f FROM Frota f WHERE f.nif = :nif")
+        }
+)
+
 public class Frota implements IFrota {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

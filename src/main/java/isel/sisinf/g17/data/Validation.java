@@ -1,8 +1,9 @@
-package isel.sisinf.g17.data.validation;
-
-import java.util.regex.Pattern;
+package isel.sisinf.g17.data;
 
 public class Validation {
+    private static final int MAX_NAME_LENGTH = 60;
+    private static final int MAX_ADDRESS_LENGTH = 60;
+    private static final int MAX_ESTADO_LENGTH = 20;
 
     public static boolean matriculaValida(String matricula) {
         // 00-00-AA
@@ -31,5 +32,17 @@ public class Validation {
 
     public static boolean ccValido(int cc) {
         return cc >= 0 && cc <= 99999999;
+    }
+
+    public static boolean nomeValido(String nome) {
+        return nome.length() <= MAX_NAME_LENGTH;
+    }
+
+    public static boolean moradaValida(String morada) {
+        return morada.length() <= MAX_ADDRESS_LENGTH;
+    }
+
+    public static boolean estadoValido(String estado) {
+        return estado.length() <= MAX_ESTADO_LENGTH;
     }
 }

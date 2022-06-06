@@ -14,7 +14,7 @@
             <property name="jakarta.persistence.jdbc.password" value="postgres"/>
 
 
-            <property name="eclipselink.logging.level" value="INFO"/>
+            <property name="eclipselink.logging.level" value="OFF"/>
             <property name="eclipselink.target-database"
                       value="org.eclipse.persistence.platform.database.PostgreSQLPlatform"/>
             <property name="eclipselink.jdbc.connection_pool.default.initial" value="2"/>

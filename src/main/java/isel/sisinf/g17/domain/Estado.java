@@ -1,5 +1,6 @@
 package isel.sisinf.g17.domain;
 
+import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IEstado;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,6 +14,16 @@ public class Estado implements IEstado {
     @Id
     private String estado;
 
+    public Estado() {
+    }
+
+    public Estado(String estado) {
+        super();
+
+        setEstado(estado);
+    }
+
+
     @Override
     public String getEstado() {
         return estado;
@@ -20,7 +31,7 @@ public class Estado implements IEstado {
 
     @Override
     public void setEstado(String estado) {
-        if (estado.length() > MAX_ESTADO_LENGTH)
+        if (!Validation.estadoValido(estado))
             throw new IllegalArgumentException("The given estado is too long");
         this.estado = estado;
     }

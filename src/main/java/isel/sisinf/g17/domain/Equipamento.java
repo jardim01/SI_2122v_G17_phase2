@@ -15,6 +15,16 @@ public class Equipamento implements IEquipamento {
     @JoinColumn(name = "estado")
     private Estado estado;
 
+    public Equipamento() {
+
+    }
+
+    public Equipamento(Estado estado) {
+        super();
+
+        setEstado(estado);
+    }
+
     @Override
     public long getId() {
         return id;
@@ -39,3 +49,4 @@ public class Equipamento implements IEquipamento {
         );
     }
 }
+

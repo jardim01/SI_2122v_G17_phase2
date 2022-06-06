@@ -1,22 +1,52 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.data.validation.Validation;
+import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IClienteInstitucional;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "clientes")
+@SecondaryTables({
+        @SecondaryTable(
+                name = "clientes_institucionais",
+                pkJoinColumns = @PrimaryKeyJoinColumn(name = "nif_cliente", referencedColumnName = "nif")
+        ),
+        @SecondaryTable(
+                name = "frotas_veiculos",
+                pkJoinColumns = @PrimaryKeyJoinColumn(name = "nif_cliente", referencedColumnName = "nif")
+        )
+})
+@NamedQuery(name = "ClienteInstitucional.findByKey", query = "SELECT c FROM ClienteInstitucional c WHERE c.nif =:key")
 public class ClienteInstitucional implements IClienteInstitucional {
+    @Id
     private int nif;
     private String nome;
     private String morada;
     private int telefone;
-    private char tipo;
-    private ClienteParticular refCliente;
+    private final char tipo = 'I';
+    @Convert(converter = BooleanToBit.class)
     private boolean removido;
-    private String nomeContacto;
-    private Frota frota;
 
-    @Override
-    public String getNomeContacto() {
-        return nomeContacto;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "ref_cliente", referencedColumnName = "nif")
+    private ClienteParticular refCliente;
+
+    @Column(table = "clientes_institucionais", name = "nome_contacto")
+    private String nomeContacto;
+
+    public ClienteInstitucional() {
+
+    }
+
+    public ClienteInstitucional(int nif, String nome, String morada, int telefone, String nomeContacto) {
+        super();
+
+        setNif(nif);
+        setNome(nome);
+        setMorada(morada);
+        setTelefone(telefone);
+        setRemovido(false);
+        setNomeContacto(nomeContacto);
     }
 
     @Override
@@ -50,10 +80,14 @@ public class ClienteInstitucional implements IClienteInstitucional {
     }
 
     @Override
+    public String getNomeContacto() {
+        return this.nomeContacto;
+    }
+
+    @Override
     public boolean getRemovido() {
         return removido;
     }
-
 
     @Override
     public void setNif(int nif) {
@@ -64,21 +98,21 @@ public class ClienteInstitucional implements IClienteInstitucional {
 
     @Override
     public void setNome(String nome) {
-        if (nome.length() > MAX_NAME_LENGTH)
+        if (!Validation.nomeValido(nome))
             throw new IllegalArgumentException("The given name is too long");
         this.nome = nome;
     }
 
     @Override
     public void setMorada(String morada) {
-        if (morada.length() > MAX_ADDRESS_LENGTH)
+        if (Validation.moradaValida(morada))
             throw new IllegalArgumentException("The given address is too long");
         this.morada = morada;
     }
 
     @Override
     public void setTelefone(int telefone) {
-        if (!Validation.telefoneValido(telefone))
+        if (!Validation.telefoneValido(nif))
             throw new IllegalArgumentException("Invalid phone number");
         this.telefone = telefone;
     }
@@ -89,15 +123,15 @@ public class ClienteInstitucional implements IClienteInstitucional {
     }
 
     @Override
-    public void setRemovido(boolean removido) {
-        this.removido = removido;
+    public void setNomeContacto(String nomeContacto) {
+        if (!Validation.nomeValido(nomeContacto))
+            throw new IllegalArgumentException("The given name is too long");
+        this.nomeContacto = nomeContacto;
     }
 
     @Override
-    public void setNomeContacto(String nomeContacto) {
-        if (nomeContacto.length() > MAX_NAME_LENGTH)
-            throw new IllegalArgumentException("The given name is too long");
-        this.nomeContacto = nomeContacto;
+    public void setRemovido(boolean removido) {
+        this.removido = removido;
     }
 
     @Override
