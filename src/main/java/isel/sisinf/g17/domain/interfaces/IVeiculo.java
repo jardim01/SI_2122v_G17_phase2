@@ -14,8 +14,6 @@ public interface IVeiculo {
 
     Frota getFrota();
 
-    int getNumeroAlarmes();
-
     void setMatricula(String matricula);
 
     void setNomeCondutorAtual(String nomeCondutorAtual);

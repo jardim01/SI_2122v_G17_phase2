@@ -20,8 +20,6 @@ public class Veiculo implements IVeiculo {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_frota")
     private Frota frota;
-    @Column(name = "n_alarmes")
-    private int numeroAlarmes;
 
     @Override
     public String getMatricula() {
@@ -46,11 +44,6 @@ public class Veiculo implements IVeiculo {
     @Override
     public Frota getFrota() {
         return frota;
-    }
-
-    @Override
-    public int getNumeroAlarmes() {
-        return numeroAlarmes;
     }
 
     @Override
@@ -87,8 +80,8 @@ public class Veiculo implements IVeiculo {
     @Override
     public String toString() {
         return String.format(
-                "Veiculo(matricula=%s, nomeCondutorAtual=%s, telefoneCondutorAtual=%d, equipId=%d, frotaId=%d, nAlarmes=%d)",
-                matricula, nomeCondutorAtual, telefoneCondutorAtual, equipamento.getId(), frota.getId(), numeroAlarmes
+                "Veiculo(matricula=%s, nomeCondutorAtual=%s, telefoneCondutorAtual=%d, equipId=%d, frotaId=%d)",
+                matricula, nomeCondutorAtual, telefoneCondutorAtual, equipamento.getId(), frota.getId()
         );
     }
 }
