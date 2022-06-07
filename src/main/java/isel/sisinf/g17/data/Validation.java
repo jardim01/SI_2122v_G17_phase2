@@ -45,4 +45,12 @@ public class Validation {
     public static boolean estadoValido(String estado) {
         return estado.length() <= MAX_ESTADO_LENGTH;
     }
+
+    public static boolean latitudeValida(double latitude) {
+        return latitude >= -90 && latitude <= 90;
+    }
+
+    public static boolean longitudeValida(double longitude) {
+        return longitude >= -180 && longitude <= 180;
+    }
 }

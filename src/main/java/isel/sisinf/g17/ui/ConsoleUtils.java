@@ -31,6 +31,19 @@ public class ConsoleUtils {
         }
     }
 
+    public static double readDouble(String prompt) {
+        Scanner s = new Scanner(System.in);
+        while (true) {
+            System.out.print(prompt);
+            String line = s.nextLine();
+            try {
+                return Double.parseDouble(line);
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+    }
+
     public static Character readChar(String prompt, List<Character> valid) {
         Scanner s = new Scanner(System.in);
         while (true) {
@@ -90,6 +103,22 @@ public class ConsoleUtils {
             int cc = readInt(prompt);
             if (Validation.ccValido(cc))
                 return cc;
+        }
+    }
+
+    public static double readLatitude(String prompt) {
+        while (true) {
+            double latitude = readDouble(prompt);
+            if (Validation.latitudeValida(latitude))
+                return latitude;
+        }
+    }
+
+    public static double readLongitude(String prompt) {
+        while (true) {
+            double longitude = readDouble(prompt);
+            if (Validation.longitudeValida(longitude))
+                return longitude;
         }
     }
 }

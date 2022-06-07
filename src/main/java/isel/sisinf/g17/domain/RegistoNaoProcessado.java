@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "registos_nao_processados")
+@NamedQuery(name = "RegistoNaoProcessado.findByKey", query = "SELECT r FROM RegistoNaoProcessado r WHERE r.id = :key")
 public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,5 +67,13 @@ public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     public void setLongitude(double longitude) {
         // TODO: validate
         this.longitude = longitude;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "RegistoNaoProcessado(id=%d, idEquip=%d, marcaTemporal=%s, latitude=%f, longitude=%f)",
+                id, equipamento.getId(), marcaTemporal, latitude, longitude
+        );
     }
 }

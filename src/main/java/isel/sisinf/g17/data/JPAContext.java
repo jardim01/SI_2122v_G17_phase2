@@ -17,8 +17,8 @@ public class JPAContext implements IContext {
     private final IRepoClientesInstitucionais repoClientesInstitucionais;
     private final IRepoAlarmes repoAlarmes;
     private final IRepoVeiculos repoVeiculos;
-
     private final IRepoFrotas repoFrotas;
+    private final IRepoRegistosNaoProcessados repoRegistosNaoProcessados;
 
     public JPAContext() {
         this("isel-sisinf-g17");
@@ -34,6 +34,7 @@ public class JPAContext implements IContext {
         this.repoAlarmes = new RepoAlarmes(this.em);
         this.repoVeiculos = new RepoVeiculos(this.em);
         this.repoFrotas = new RepoFrotas(this.em);
+        this.repoRegistosNaoProcessados = new RepoRegistosNaoProcessados(this.em);
     }
 
     @Override
@@ -86,6 +87,11 @@ public class JPAContext implements IContext {
     @Override
     public IRepoFrotas getRepoFrotas() {
         return this.repoFrotas;
+    }
+
+    @Override
+    public IRepoRegistosNaoProcessados getRepoRegistosNaoProcessados() {
+        return this.repoRegistosNaoProcessados;
     }
 
     @Override

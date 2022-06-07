@@ -7,12 +7,12 @@ import isel.sisinf.g17.domain.*;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class App {
-
     private static class MenuOption {
         String description;
         Action action;
@@ -58,16 +58,22 @@ public class App {
                     listarAlarmes();
                 }
             }),
-            new MenuOption("Inserir alarme", new Action() {
-                @Override
-                public void run() {
-                    System.err.println("TODO");
-                }
-            }),
             new MenuOption("Contar alarmes ano/veiculo", new Action() {
                 @Override
                 public void run() {
                     contarAlarmes();
+                }
+            }),
+            new MenuOption("Listar registos não processados", new Action() {
+                @Override
+                public void run() {
+                    listarRegistosNaoProcessados();
+                }
+            }),
+            new MenuOption("Inserir registo", new Action() {
+                @Override
+                public void run() {
+                    inserirRegisto();
                 }
             }),
             new MenuOption("Processar registos", new Action() {
@@ -134,6 +140,7 @@ public class App {
     IRepoAlarmes repoAlarmes;
     IRepoVeiculos repoVeiculos;
     IRepoFrotas repoFrotas;
+    IRepoRegistosNaoProcessados repoRegistosNaoProcessados;
 
     public void run() {
         // TODO: set transaction levels
@@ -144,6 +151,7 @@ public class App {
             repoAlarmes = ctx.getRepoAlarmes();
             repoVeiculos = ctx.getRepoVeiculos();
             repoFrotas = ctx.getRepoFrotas();
+            repoRegistosNaoProcessados = ctx.getRepoRegistosNaoProcessados();
 
             ConsoleUtils.clear();
             while (true) {
@@ -161,14 +169,6 @@ public class App {
         }
     }
 
-    private void listarClientesParticulares() {
-        List<ClienteParticular> clients = repoClientesParticulares.find("SELECT c from ClienteParticular c");
-        for (ClienteParticular client : clients) {
-            if (client.getRemovido()) continue;
-            System.out.println(client);
-        }
-    }
-
     private ClienteParticular readClienteParticular() {
         int nif = ConsoleUtils.readNif("NIF: ");
         ClienteParticular c;
@@ -180,6 +180,14 @@ public class App {
             } catch (NoResultException e) {
                 System.out.println("\nERRO: Não existe nenhum cliente particular com o NIF indicado");
             }
+        }
+    }
+
+    private void listarClientesParticulares() {
+        List<ClienteParticular> clients = repoClientesParticulares.find("SELECT c from ClienteParticular c");
+        for (ClienteParticular client : clients) {
+            if (client.getRemovido()) continue;
+            System.out.println(client);
         }
     }
 
@@ -273,9 +281,48 @@ public class App {
             System.out.println("\nTotal de alarmes do veículo " + matricula + " em " + ano + ": " + count);
     }
 
+    private void listarRegistosNaoProcessados() {
+        List<RegistoNaoProcessado> regs = repoRegistosNaoProcessados.find(
+                "SELECT r from RegistoNaoProcessado r"
+        );
+        for (RegistoNaoProcessado reg : regs) {
+            System.out.println(reg);
+        }
+    }
+
+    private void inserirRegisto() {
+        String matricula = ConsoleUtils.readMatricula("Matrícula: ");
+        Equipamento equipamento;
+        try {
+            Veiculo v = repoVeiculos.findByKey(matricula);
+            equipamento = v.getEquipamento();
+        } catch (NoResultException e) {
+            System.out.println("\nERRO: Não existe nenhum veículo com a matrícula indicada");
+            return;
+        }
+        double latitude = ConsoleUtils.readLatitude("Latitude: ");
+        double longitude = ConsoleUtils.readLongitude("Longitude: ");
+
+        RegistoNaoProcessado r = new RegistoNaoProcessado();
+        r.setEquipamento(equipamento);
+        r.setLatitude(latitude);
+        r.setLongitude(longitude);
+        r.setMarcaTemporal(new Timestamp(System.currentTimeMillis()));
+
+        ctx.beginTransaction();
+        repoRegistosNaoProcessados.add(r);
+        ctx.commit();
+
+        System.out.println("Sucesso!");
+    }
+
     private void processarRegistos() {
         ctx.processarRegistos();
         System.out.println("Sucesso!");
+    }
+
+    private void processarRegistosOptimisticLocking() {
+        // TODO
     }
 
     private void listarVeiculos() {

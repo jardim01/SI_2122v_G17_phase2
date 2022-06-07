@@ -21,6 +21,7 @@ public interface IContext extends AutoCloseable {
     IRepoVeiculos getRepoVeiculos();
 
     IRepoFrotas getRepoFrotas();
+    IRepoRegistosNaoProcessados getRepoRegistosNaoProcessados();
 
     long contarAlarmes(int year, String matricula);
 
