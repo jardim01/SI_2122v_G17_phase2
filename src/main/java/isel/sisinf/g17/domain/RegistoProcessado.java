@@ -58,13 +58,15 @@ public class RegistoProcessado implements IRegistoProcessado {
 
     @Override
     public void setLatitude(double latitude) {
-        // TODO: validate
+        if (!Validation.latitudeValida(latitude))
+            throw new IllegalArgumentException("Invalid value");
         this.latitude = latitude;
     }
 
     @Override
     public void setLongitude(double longitude) {
-        // TODO: validate
+        if (!Validation.longitudeValida(latitude))
+            throw new IllegalArgumentException("Invalid value");
         this.longitude = longitude;
     }
 }

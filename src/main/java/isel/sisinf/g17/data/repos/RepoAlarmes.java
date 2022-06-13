@@ -25,7 +25,6 @@ public class RepoAlarmes implements IRepoAlarmes {
 
     @Override
     public void add(Alarme entity) {
-        // TODO: review this
         em.merge(entity);
     }
 

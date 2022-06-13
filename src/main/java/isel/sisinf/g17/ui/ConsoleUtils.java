@@ -1,6 +1,6 @@
 package isel.sisinf.g17.ui;
 
-import isel.sisinf.g17.data.Validation;
+import isel.sisinf.g17.domain.Validation;
 
 import java.util.List;
 import java.util.Scanner;

@@ -1,4 +1,4 @@
-package isel.sisinf.g17.data;
+package isel.sisinf.g17.domain;
 
 public class Validation {
     private static final int MAX_NAME_LENGTH = 60;

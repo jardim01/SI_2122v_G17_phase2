@@ -11,7 +11,6 @@ public interface IRegistoNaoProcessado {
 
     Equipamento getEquipamento();
 
-    // TODO: probably not double
     double getLatitude();
 
     double getLongitude();
@@ -20,7 +19,6 @@ public interface IRegistoNaoProcessado {
 
     void setEquipamento(Equipamento equipamento);
 
-    // TODO: probably not double
     void setLatitude(double latitude);
 
     void setLongitude(double longitude);

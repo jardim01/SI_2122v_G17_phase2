@@ -1,6 +1,5 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IVeiculo;
 import jakarta.persistence.*;
 

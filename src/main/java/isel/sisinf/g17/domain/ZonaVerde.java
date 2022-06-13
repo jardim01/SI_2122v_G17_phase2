@@ -1,6 +1,5 @@
 package isel.sisinf.g17.domain;
 
-import isel.sisinf.g17.data.Validation;
 import isel.sisinf.g17.domain.interfaces.IZonaVerde;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -44,13 +43,15 @@ public class ZonaVerde implements IZonaVerde {
 
     @Override
     public void setLatitude(double latitude) {
-        // TODO: validate
+        if (!Validation.latitudeValida(latitude))
+            throw new IllegalArgumentException("Invalid value");
         this.latitude = latitude;
     }
 
     @Override
     public void setLongitude(double longitude) {
-        // TODO: validate
+        if (!Validation.longitudeValida(latitude))
+            throw new IllegalArgumentException("Invalid value");
         this.longitude = longitude;
     }
 

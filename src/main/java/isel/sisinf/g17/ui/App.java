@@ -2,9 +2,10 @@ package isel.sisinf.g17.ui;
 
 import isel.sisinf.g17.data.JPAContext;
 import isel.sisinf.g17.data.repos.interfaces.*;
-import isel.sisinf.g17.data.Validation;
+import isel.sisinf.g17.domain.Validation;
 import isel.sisinf.g17.domain.*;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 
 import java.sql.Timestamp;
@@ -85,7 +86,7 @@ public class App {
             new MenuOption("Processar registos (optimistic locking)", new Action() {
                 @Override
                 public void run() {
-                    System.err.println("TODO");
+                    processarRegistosOptimisticLocking();
                 }
             }),
             new MenuOption("Listar veículos", new Action() {
@@ -143,7 +144,6 @@ public class App {
     IRepoRegistosNaoProcessados repoRegistosNaoProcessados;
 
     public void run() {
-        // TODO: set transaction levels
         try (JPAContext ctx = new JPAContext()) {
             this.ctx = ctx;
             repoClientesParticulares = ctx.getRepoClientesParticulares();
@@ -322,7 +322,12 @@ public class App {
     }
 
     private void processarRegistosOptimisticLocking() {
-        // TODO
+        try {
+            ctx.processarRegistosOptimisticLocking();
+            System.out.println("Sucesso!");
+        } catch (OptimisticLockException e) {
+            System.out.println("Não foi possível efetuar a operação devido a alterações concorrentes conflituantes!");
+        }
     }
 
     private void listarVeiculos() {

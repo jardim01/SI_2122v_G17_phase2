@@ -25,7 +25,6 @@ public class RepoVeiculos implements IRepoVeiculos {
 
     @Override
     public void add(Veiculo entity) {
-        // TODO: review this
         em.merge(entity);
     }
 

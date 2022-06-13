@@ -29,3 +29,4 @@ public class BooleanToBit implements AttributeConverter<Boolean, Object> {
         return value == Boolean.TRUE;
     }
 }
+

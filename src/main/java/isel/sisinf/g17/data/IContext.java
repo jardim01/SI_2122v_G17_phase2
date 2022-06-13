@@ -27,6 +27,8 @@ public interface IContext extends AutoCloseable {
 
     void processarRegistos();
 
+    void processarRegistosOptimisticLocking();
+
     ClienteParticular inserirClienteParticular(int nif, String nome, String morada, int telefone, int cc);
 
     Veiculo criarVeiculo(String matricula, String nomeCondutor, int telefoneCondutor, int nifCliente, ZonaVerde zonaVerde);

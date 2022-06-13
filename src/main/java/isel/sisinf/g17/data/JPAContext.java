@@ -3,9 +3,12 @@ package isel.sisinf.g17.data;
 import isel.sisinf.g17.data.repos.*;
 import isel.sisinf.g17.data.repos.interfaces.*;
 import isel.sisinf.g17.domain.ClienteParticular;
+import isel.sisinf.g17.domain.RegistoNaoProcessado;
 import isel.sisinf.g17.domain.Veiculo;
 import isel.sisinf.g17.domain.ZonaVerde;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 public class JPAContext implements IContext {
     private final EntityManagerFactory emf;
@@ -123,6 +126,12 @@ public class JPAContext implements IContext {
         } finally {
             commit();
         }
+    }
+
+    @Override
+    public void processarRegistosOptimisticLocking() {
+        // TODO
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
