@@ -83,12 +83,6 @@ public class App {
                     processarRegistos();
                 }
             }),
-            new MenuOption("Processar registos (optimistic locking)", new Action() {
-                @Override
-                public void run() {
-                    processarRegistosOptimisticLocking();
-                }
-            }),
             new MenuOption("Listar veículos", new Action() {
                 @Override
                 public void run() {
@@ -184,7 +178,7 @@ public class App {
     }
 
     private void listarClientesParticulares() {
-        List<ClienteParticular> clients = repoClientesParticulares.find("SELECT c from ClienteParticular c");
+        List<ClienteParticular> clients = repoClientesParticulares.find("SELECT c FROM ClienteParticular c");
         for (ClienteParticular client : clients) {
             if (client.getRemovido()) continue;
             System.out.println(client);
@@ -262,7 +256,7 @@ public class App {
     }
 
     private void listarAlarmes() {
-        List<Alarme> alarms = repoAlarmes.find("SELECT c from Alarme c");
+        List<Alarme> alarms = repoAlarmes.find("SELECT c FROM Alarme c");
         for (Alarme alarm : alarms) {
             System.out.println(alarm);
         }
@@ -283,7 +277,7 @@ public class App {
 
     private void listarRegistosNaoProcessados() {
         List<RegistoNaoProcessado> regs = repoRegistosNaoProcessados.find(
-                "SELECT r from RegistoNaoProcessado r"
+                "SELECT r FROM RegistoNaoProcessado r"
         );
         for (RegistoNaoProcessado reg : regs) {
             System.out.println(reg);
@@ -321,17 +315,8 @@ public class App {
         System.out.println("Sucesso!");
     }
 
-    private void processarRegistosOptimisticLocking() {
-        try {
-            ctx.processarRegistosOptimisticLocking();
-            System.out.println("Sucesso!");
-        } catch (OptimisticLockException e) {
-            System.out.println("Não foi possível efetuar a operação devido a alterações concorrentes conflituantes!");
-        }
-    }
-
     private void listarVeiculos() {
-        List<Veiculo> veiculos = repoVeiculos.find("SELECT v from Veiculo v");
+        List<Veiculo> veiculos = repoVeiculos.find("SELECT v FROM Veiculo v");
         for (Veiculo veiculo : veiculos) {
             System.out.println(veiculo);
         }

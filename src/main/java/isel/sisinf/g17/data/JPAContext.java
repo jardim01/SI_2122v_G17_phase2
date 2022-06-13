@@ -129,12 +129,6 @@ public class JPAContext implements IContext {
     }
 
     @Override
-    public void processarRegistosOptimisticLocking() {
-        // TODO
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    @Override
     public ClienteParticular inserirClienteParticular(int nif, String nome, String morada, int telefone, int cc) {
         beginTransaction();
         try {
