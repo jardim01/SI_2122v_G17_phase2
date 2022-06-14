@@ -7,6 +7,7 @@ import isel.sisinf.g17.domain.*;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.RollbackException;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -122,7 +123,7 @@ public class App {
     };
 
     private MenuOption displayMenu() {
-        System.out.println("############### Menu ###############");
+        System.out.println("################### Menu ###################");
         for (int i = 0; i < menuOptions.length; i++) {
             System.out.printf("%d. %s\n", i + 1, menuOptions[i].description);
         }
@@ -160,7 +161,7 @@ public class App {
 
                 ConsoleUtils.clear();
                 option.action.run();
-                System.out.print("\nPress ENTER to continue...");
+                System.out.print("\nPressione ENTER para continuar...");
                 new Scanner(System.in).nextLine();
                 ConsoleUtils.clear();
             }
@@ -224,10 +225,7 @@ public class App {
         c.setMorada(novaMorada);
         c.setCc(novoCc);
 
-        boolean atualizarReferencia = ConsoleUtils.readChar(
-                "Deseja atualizar a referência? (y/n)\n> ",
-                Arrays.asList('y', 'n')
-        ) == 'y';
+        boolean atualizarReferencia = ConsoleUtils.confirm("Deseja atualizar a referência? (y/n)\n> ");
         if (atualizarReferencia) {
             while (true) {
                 int refNif = ConsoleUtils.readInt("NIF Referente: ");
@@ -248,10 +246,9 @@ public class App {
     private void removerClienteParticular() {
         ClienteParticular c = readClienteParticular();
 
-        boolean cancel = ConsoleUtils.readChar(
-                "Tem a certeza que deseja remover o cliente " + c.getNome() + "? (y/n)\n> ",
-                Arrays.asList('y', 'n')
-        ) == 'n';
+        boolean cancel = !ConsoleUtils.confirm(
+                "Tem a certeza que deseja remover o cliente " + c.getNome() + "? (y/n)\n> "
+        );
         if (cancel) return;
 
         ctx.beginTransaction();
@@ -325,9 +322,9 @@ public class App {
         try {
             ctx.processarRegistosOptimisticLocking();
             System.out.println("Sucesso!");
-        } catch (OptimisticLockException e) {
+        } catch (RollbackException e) {
+            if (e.getCause().getClass() != OptimisticLockException.class) throw e;
             System.out.println(
-
                     "Não foi possível processar os registos devido a alterações concorrentes conflituantes"
             );
         }
@@ -346,9 +343,24 @@ public class App {
         int telCondutor = ConsoleUtils.readTelefone("Telefone Condutor: ");
         int nifCliente = ConsoleUtils.readNif("NIF Cliente: ");
 
+        boolean associarZonaVerde = ConsoleUtils.confirm(
+                "Deseja associar uma zona verde ao veículo? (y/n)\n> "
+        );
+
+        ZonaVerde zonaVerde = null;
+        if (associarZonaVerde) {
+            zonaVerde = new ZonaVerde();
+            double latitude = ConsoleUtils.readLatitude("Latitude: ");
+            double longitude = ConsoleUtils.readLongitude("Longitude: ");
+            int raio = ConsoleUtils.readInt("Raio: ");
+            zonaVerde.setLatitude(latitude);
+            zonaVerde.setLongitude(longitude);
+            zonaVerde.setRaio(raio);
+            zonaVerde.setMatricula(matricula);
+        }
+
         try {
-            // TODO: Zona Verde
-            Veiculo v = ctx.criarVeiculo(matricula, nomeCondutor, telCondutor, nifCliente, null);
+            Veiculo v = ctx.criarVeiculo(matricula, nomeCondutor, telCondutor, nifCliente, zonaVerde);
             System.out.println("\nSucesso: " + v);
         } catch (PersistenceException e) {
             String msg = e.getMessage();
@@ -356,8 +368,9 @@ public class App {
                 System.out.println("\nERRO: Não existe nenhum cliente com o NIF indicado");
             else if (msg.contains("duplicate key value violates unique constraint \"veiculos_pkey\""))
                 System.out.println("\nERRO: Já existe um veículo com a matrícula indicada");
-            else
-                throw e;
+            else if (msg.contains("Número máximo de veículos alcançado"))
+                System.out.println("\nERRO: Número máximo de veículos alcançado");
+            else throw e;
         }
     }
 

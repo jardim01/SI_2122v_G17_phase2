@@ -2,6 +2,7 @@ package isel.sisinf.g17.ui;
 
 import isel.sisinf.g17.domain.Validation;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -120,5 +121,10 @@ public class ConsoleUtils {
             if (Validation.longitudeValida(longitude))
                 return longitude;
         }
+    }
+
+    public static boolean confirm(String prompt) {
+        Character c = readChar(prompt, Arrays.asList('y', 'n'));
+        return c == 'y';
     }
 }

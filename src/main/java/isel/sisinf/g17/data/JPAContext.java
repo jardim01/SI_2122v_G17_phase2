@@ -7,6 +7,7 @@ import isel.sisinf.g17.domain.interfaces.IRegistoNaoProcessado;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class JPAContext implements IContext {
     private final EntityManagerFactory emf;
@@ -167,7 +168,11 @@ public class JPAContext implements IContext {
             List<RegistoNaoProcessadoOpt> registos = repoRegistosNaoProcessadosOpt.find(
                     "SELECT r FROM RegistoNaoProcessadoOpt r"
             );
-            System.out.println(registos.size());
+            // ----- For testing purposes only -----
+            System.out.println("Pressione ENTER após causar alterações conflituantes...");
+            Scanner s = new Scanner(System.in);
+            s.nextLine();
+            // -------------------------------------
             for (RegistoNaoProcessadoOpt r : registos) {
                 if (registoValido(r)) processarRegistoValido(r);
                 else processarRegistoInvalido(r);
@@ -209,7 +214,9 @@ public class JPAContext implements IContext {
             if (zonaVerde == null) {
                 q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, null, null, null)");
             } else {
-                q = em.createNativeQuery("call criarVeiculo(?1, ?2, ?3, ?4, ?5, ?6, ?7)");
+                q = em.createNativeQuery(
+                        "call criarVeiculo(?1, ?2, ?3, ?4, cast(?5 as decimal), cast(?6 as decimal), ?7)"
+                );
                 q.setParameter(5, zonaVerde.getLatitude());
                 q.setParameter(6, zonaVerde.getLongitude());
                 q.setParameter(7, zonaVerde.getRaio());
