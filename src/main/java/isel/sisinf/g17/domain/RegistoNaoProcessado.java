@@ -19,8 +19,8 @@ public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_equip")
     private Equipamento equipamento;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
     @Override
     public long getId() {
@@ -38,12 +38,12 @@ public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     }
 
     @Override
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
     @Override
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
@@ -58,14 +58,14 @@ public class RegistoNaoProcessado implements IRegistoNaoProcessado {
     }
 
     @Override
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         if (!Validation.latitudeValida(latitude))
             throw new IllegalArgumentException("Invalid value");
         this.latitude = latitude;
     }
 
     @Override
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         if (!Validation.longitudeValida(longitude))
             throw new IllegalArgumentException("Invalid value");
         this.longitude = longitude;
@@ -73,9 +73,11 @@ public class RegistoNaoProcessado implements IRegistoNaoProcessado {
 
     @Override
     public String toString() {
+        Long equipId = null;
+        if (equipamento != null) equipId = equipamento.getId();
         return String.format(
                 "RegistoNaoProcessado(id=%d, idEquip=%d, marcaTemporal=%s, latitude=%f, longitude=%f)",
-                id, equipamento.getId(), marcaTemporal, latitude, longitude
+                id, equipId, marcaTemporal, latitude, longitude
         );
     }
 }

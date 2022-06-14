@@ -83,6 +83,12 @@ public class App {
                     processarRegistos();
                 }
             }),
+            new MenuOption("Processar registos (Optimistic Locking)", new Action() {
+                @Override
+                public void run() {
+                    processarRegistosOptimisticLocking();
+                }
+            }),
             new MenuOption("Listar veículos", new Action() {
                 @Override
                 public void run() {
@@ -313,6 +319,18 @@ public class App {
     private void processarRegistos() {
         ctx.processarRegistos();
         System.out.println("Sucesso!");
+    }
+
+    private void processarRegistosOptimisticLocking() {
+        try {
+            ctx.processarRegistosOptimisticLocking();
+            System.out.println("Sucesso!");
+        } catch (OptimisticLockException e) {
+            System.out.println(
+
+                    "Não foi possível processar os registos devido a alterações concorrentes conflituantes"
+            );
+        }
     }
 
     private void listarVeiculos() {

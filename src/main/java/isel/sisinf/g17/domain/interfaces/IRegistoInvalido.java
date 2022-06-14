@@ -1,15 +1,11 @@
 package isel.sisinf.g17.domain.interfaces;
 
-import isel.sisinf.g17.domain.Equipamento;
-
 import java.sql.Timestamp;
 
-public interface IRegistoNaoProcessado {
-    long getId();
+public interface IRegistoInvalido {
+    Long getIdEquip();
 
     Timestamp getMarcaTemporal();
-
-    Equipamento getEquipamento();
 
     Double getLatitude();
 
@@ -17,7 +13,7 @@ public interface IRegistoNaoProcessado {
 
     void setMarcaTemporal(Timestamp marcaTemporal);
 
-    void setEquipamento(Equipamento equipamento);
+    void setIdEquip(Long idEquip);
 
     void setLatitude(Double latitude);
 

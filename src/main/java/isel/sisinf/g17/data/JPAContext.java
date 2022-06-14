@@ -2,10 +2,8 @@ package isel.sisinf.g17.data;
 
 import isel.sisinf.g17.data.repos.*;
 import isel.sisinf.g17.data.repos.interfaces.*;
-import isel.sisinf.g17.domain.ClienteParticular;
-import isel.sisinf.g17.domain.RegistoNaoProcessado;
-import isel.sisinf.g17.domain.Veiculo;
-import isel.sisinf.g17.domain.ZonaVerde;
+import isel.sisinf.g17.domain.*;
+import isel.sisinf.g17.domain.interfaces.IRegistoNaoProcessado;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -22,6 +20,9 @@ public class JPAContext implements IContext {
     private final IRepoVeiculos repoVeiculos;
     private final IRepoFrotas repoFrotas;
     private final IRepoRegistosNaoProcessados repoRegistosNaoProcessados;
+    private final IRepoRegistosNaoProcessadosOpt repoRegistosNaoProcessadosOpt;
+    private final IRepoRegistosProcessados repoRegistosProcessados;
+    private final IRepoRegistosInvalidos repoRegistosInvalidos;
 
     public JPAContext() {
         this("isel-sisinf-g17");
@@ -38,6 +39,9 @@ public class JPAContext implements IContext {
         this.repoVeiculos = new RepoVeiculos(this.em);
         this.repoFrotas = new RepoFrotas(this.em);
         this.repoRegistosNaoProcessados = new RepoRegistosNaoProcessados(this.em);
+        this.repoRegistosNaoProcessadosOpt = new RepoRegistosNaoProcessadosOpt(this.em);
+        this.repoRegistosProcessados = new RepoRegistosProcessados(this.em);
+        this.repoRegistosInvalidos = new RepoRegistosInvalidos(this.em);
     }
 
     @Override
@@ -123,6 +127,52 @@ public class JPAContext implements IContext {
         beginTransaction();
         try {
             em.createNativeQuery("call processarRegistos()").executeUpdate();
+        } finally {
+            commit();
+        }
+    }
+
+    private boolean registoValido(IRegistoNaoProcessado r) {
+        if (r.getMarcaTemporal() == null) return false;
+        if (r.getLatitude() == null) return false;
+        if (r.getLongitude() == null) return false;
+        if (r.getEquipamento() == null) return false;
+        return true;
+    }
+
+    private void processarRegistoValido(IRegistoNaoProcessado r) {
+        RegistoProcessado rp = new RegistoProcessado();
+        rp.setMarcaTemporal(r.getMarcaTemporal());
+        rp.setLatitude(r.getLatitude());
+        rp.setLongitude(r.getLongitude());
+        rp.setEquipamento(r.getEquipamento());
+        repoRegistosProcessados.add(rp);
+    }
+
+    private void processarRegistoInvalido(IRegistoNaoProcessado r) {
+        RegistoInvalido ri = new RegistoInvalido();
+        ri.setMarcaTemporal(r.getMarcaTemporal());
+        Equipamento e = r.getEquipamento();
+        if (e == null) ri.setIdEquip(null);
+        else ri.setIdEquip(e.getId());
+        ri.setLatitude(r.getLatitude());
+        ri.setLongitude(r.getLongitude());
+        repoRegistosInvalidos.add(ri);
+    }
+
+    @Override
+    public void processarRegistosOptimisticLocking() {
+        beginTransaction();
+        try {
+            List<RegistoNaoProcessadoOpt> registos = repoRegistosNaoProcessadosOpt.find(
+                    "SELECT r FROM RegistoNaoProcessadoOpt r"
+            );
+            System.out.println(registos.size());
+            for (RegistoNaoProcessadoOpt r : registos) {
+                if (registoValido(r)) processarRegistoValido(r);
+                else processarRegistoInvalido(r);
+                repoRegistosNaoProcessadosOpt.remove(r);
+            }
         } finally {
             commit();
         }
